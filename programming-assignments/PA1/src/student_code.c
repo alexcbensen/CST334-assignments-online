@@ -1,6 +1,12 @@
 
 #include "student_code.h"
+#include <stdlib.h>
 
+/**
+Question: What are the differences between these commands and the ones for lab1? What do the differences mean?
+My Answer:
+
+**/
 
 /***********
  * Strings *
@@ -9,17 +15,19 @@
 /**
  * This function takes in a c-string and returns it's length.  It **does not** use the strlen(...) function in string.h
  * @param str The string that we will be finding the length of.  It will be null terminated
- * @return The lenght of the inpurt string
+ * @return The length of the input string
  */
 int get_str_length(char* str) {
     int length = 0;
 
+    // While the current character is not the null terminator, increase the value of length
     while (str[length] != '\0') { length++; }
 
     return length;
 }
+
 // Question: How do we know that we've gotten to the end of a c-string?
-// There will be a terminating null character at the end of the string
+// Answer: The null terminator '\0' is used to indicate the end of a c-string
 
 /**
  * Returns a pointer to a copy of the original string.  It **does not** use strcpy or any related function (but may use strlen)
@@ -27,9 +35,18 @@ int get_str_length(char* str) {
  * @return a new char* that copies the input string str
  */
 char* copy_str(char* str) {
-  // todo
-  // Note: You cannot use any functions in string.h for this function!  Doing so will result in a score of 0
-  return "";
+    int length = get_str_length(str); // Get the length of the the passed-in string
+
+    // If the length of the passed-in string is empty, return NULL, as there's no string to copy
+    if (length == 0) { return NULL; }
+
+    // Create a character array of the same length and space in memory as the original string
+    char* strCopy = (char*)malloc((length + 1) * sizeof(char));
+
+    // Copy the original string into the new string, character by character
+    for (int i = 0; i < length; i++) { strCopy[i] = str[i]; }
+
+    strCopy[length] = '\0'; // Add the null terminator to the end of the new string
 }
 
 /**
@@ -38,8 +55,11 @@ char* copy_str(char* str) {
  * @param new_length The length of the output string.
  */
 void truncate_string(char* str, int new_length) {
-  // Note: You cannot use any functions in string.h for this function!  Doing so will result in a score of 0
-  // todo
+    int length = get_str_length(str); // Get the length of the original string
+
+    if (new_length >= length) { return; } // Return original string if the new length is greater
+
+    str[new_length] = '\0'; // Add the null terminator to the end of the string
 }
 
 /**
@@ -47,7 +67,9 @@ void truncate_string(char* str, int new_length) {
  * @param str A null-terminated input string
  */
 void to_uppercase(char* str) {
-  // todo
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'a' && str[i] <= 'z') { str[i] -= 32; } // If the character is lowercase, convert it to uppercase (ASCII values)
+    }
 }
 
 /**
@@ -55,7 +77,9 @@ void to_uppercase(char* str) {
  * @param str A null-terminated input string
  */
 void to_lowercase(char* str) {
-  // todo
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] >= 'A' && str[i] <= 'Z') { str[i] += 32; } // If the character is uppercase, convert it to lowercase (ASCII values)
+    }
 }
 
 /**
@@ -65,9 +89,11 @@ void to_lowercase(char* str) {
  * @return The index of the first usage of the target character in the string
  */
 int find_first_index(char* str, char target) {
-  // todo
-  // Note: You cannot use any functions in string.h for this function!  Doing so will result in a score of 0
-  return -1;
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == target) { return i; } // Return the index of the first instance of the target character
+    }
+
+    return -1; // Return -1 if the target character isn't found
 }
 
 /**
@@ -77,9 +103,13 @@ int find_first_index(char* str, char target) {
  * @return The index of the last usage of the target character in the string
  */
 int find_last_index(char* str, char target) {
-  // todo
-  // Note: You cannot use any functions in string.h for this function!  Doing so will result in a score of 0
-  return -1;
+    int last_index = -1; // Initialize as if the target character isn't found
+
+    for (int i = 0; str[i] != '\0'; i++) {
+        if (str[i] == target) { last_index = i; } // Update the last index each time the target character is found
+    }
+
+    return last_index; // Return the last index of the target character
 }
 
 
@@ -94,7 +124,12 @@ int find_last_index(char* str, char target) {
  * @return A Person struct containing the new person
  */
 Person person_make_new(char* first_name, char* last_name, int age) {
-  // todo
+    Person new_person; // Create a new Person struct
+    new_person.first_name = first_name;
+    new_person.last_name = last_name;
+    new_person.age = age;
+
+    return new_person; // Return the Person struct that was created
 }
 /**
  * Return a string containing the full name and age of the person in the format "First Last (age)"
@@ -102,9 +137,17 @@ Person person_make_new(char* first_name, char* last_name, int age) {
  * @return A string containing the name of the person
  */
 char* person_to_string(Person person) {
-  // todo
-  // hint: sprintf
-  return "";
+
+    // Get the length of the string to be created. +6 is added to account for the spaces and parentheses
+    int length = get_str_length(person.first_name) + get_str_length(person.last_name) + 6;
+
+    // Allocate memory for the new string
+    char* str - (char*)malloc((length + 1) * sizeof(char));
+
+    // Use sprintf to format the string
+    sprintf(str, "%s %s (%d)", person.first_name, person.last_name, person.age);
+
+    return str; // Return the person's name and age, as a string
 }
 
 /**
@@ -113,7 +156,14 @@ char* person_to_string(Person person) {
  * @return A new Group struct
  */
 Group group_make_new(char* group_name) {
-  // todo
+    Group new_group; // Create a new Group struct
+
+    new_group.group_name = group_name; // Initialize the group with the passed-in name
+    new_group.people = (Person*)malloc(0); // Initialize the people array to be a pointer to an empty block of memory
+    new_group.num_people = 0; // Initialize the number of people in the group to be 0
+    new_group.capacity = 0; // Initialize the capacity of the group to be 0
+
+    return new_group; // Return the new Group struct
 }
 
 /**
@@ -122,17 +172,16 @@ Group group_make_new(char* group_name) {
  * @return The number of users in the group
  */
 int num_people_in_group(Group group) {
-  // todo
-  return -1;
+    return group.num_people; // Return the number of people in the group
 }
+
 /**
  * Get the number of free spaces remaining in the group
  * @param group A Group struct that contains some number of people
  * @return The number of free spaces in the group
  */
 int free_spaces_in_group(Group group) {
-  // todo
-  return -1;
+    return group.capacity - group.num_people; // Return the number of free spaces in the group
 }
 
 /**
@@ -142,10 +191,18 @@ int free_spaces_in_group(Group group) {
  * @return The number of free spaces after add the new person, -1 if the group was already full
  */
 int add_person(Group* group, Person* person_to_add) {
-  // todo
-  // Question: Say we have already added a person to the group and try to add them again.  What should be we do?  Where can we check what the expected behavior is?
-  return -1;
+    if (group->num_people >= group->capacity) { return -1; } // Return -1 if the group is full (or if it's over capacity)
+
+    // If the group isn't full, add the new person to it
+    group->people[group->num_people] = *person_to_add;
+
+    group->num_people++; // Increment the number of people in the group
+
+    // Return the number of free spaces in the group
+    return group->capacity - group->num_people;
 }
+    // Question: Say we have already added a person to the group and try to add them again.  What should be we do?  Where can we check what the expected behavior is?
+    // Answer:
 
 /**
  * Remove a person from the group if they are in the group, otherwise return -1
