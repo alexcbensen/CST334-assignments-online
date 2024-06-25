@@ -152,7 +152,7 @@ char* person_to_string(Person person) {
 
 /**
  * A function to create a new empty group
- * @param group_name A null-terminuated string to name the new group
+ * @param group_name A null-terminated string to name the new group
  * @return A new Group struct
  */
 Group group_make_new(char* group_name) {
