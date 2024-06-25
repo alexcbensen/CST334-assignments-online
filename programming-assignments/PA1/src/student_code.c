@@ -12,11 +12,14 @@
  * @return The lenght of the inpurt string
  */
 int get_str_length(char* str) {
-  // todo
-  // Note: You cannot use any functions in string.h for this function!  Doing so will result in a score of 0
-  // Question: How do we know that we've gotten to the end of a c-string?
-  return -1;
+    int length = 0;
+
+    while (str[length] != '\0') { length++; }
+
+    return length;
 }
+// Question: How do we know that we've gotten to the end of a c-string?
+// There will be a terminating null character at the end of the string
 
 /**
  * Returns a pointer to a copy of the original string.  It **does not** use strcpy or any related function (but may use strlen)
