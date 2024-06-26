@@ -232,8 +232,25 @@ int add_person(Group* group, Person* person_to_add) {
  * @return The number of people remaining in the group, -1 if the person was not in the group
  */
 int remove_person(Group* group, Person* person_to_remove) {
-  // todo
-  return -1;
+    int index = -1;
+
+    // Find the index of the person to remove
+    for (int i = 0; i < group->num_members; i++) {
+        if (group->group_members[i] == person_to_remove) { index = i; break; }
+    }
+
+    // If the person isn't in the group, return -1
+    if (index == -1) { return -1; }
+
+    // If the person is in the group, remove them
+    for (int i = index; i < group->num_members - 1; i++) {
+        // Shift all remaining group members to the left
+        group->group_members[i] = group->group_members[i + 1];
+    }
+
+    group->num_members--; // Decrement the number of people in the group
+
+    return group->num_members; // Return the number of people left in the group
 }
 
 
