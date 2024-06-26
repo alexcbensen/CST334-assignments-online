@@ -1,4 +1,5 @@
 #define GROUP_MAX_SIZE 50
+#define ALPHABET_SIZE 26
 
 #include "student_code.h"
 #include <stdlib.h>
@@ -264,14 +265,24 @@ int remove_person(Group* group, Person* person_to_remove) {
  * @return
  */
 char shift_left(char input_char, int shift_size) {
-    // Return the input character if it's not a lowercase letter
-    if (input_char < 'a' || input_char > 'z') { return input_char; }
+    int new_char;
 
-    // Shift the character to the left by the shift size
-    int new_char = input_char - shift_size;
+    if (input_char < 'a' && input_char > 'z') {
+        // Shift the character to the left by the shift size
+        new_char = input_char - shift_size;
 
-    // If the new character is less than 'a', add 26 to it (loop back around to the end of the alphabet)
-    if (new_char < 'a') { new_char += 26; }
+        // If the new character is less than 'a', add 26 to it (loop back around to the end of the alphabet)
+        if (new_char < 'a') { new_char += 26; }
+
+    } else if (input_char >= 'A' && input_char <= 'Z') {
+        // Shift the character to the left by the shift size
+        new_char = input_char - shift_size;
+
+        // If the new character is less than 'A', add 26 to it (loop back around to the end of the alphabet)
+        if (new_char < 'A') { new_char += 26; }
+    } else { return input_char; }
+
+    return new_char; // Return the new character
 }
 
 /**
@@ -358,7 +369,24 @@ char* decrypt_caesar(char* input_str, int shift_size) {
  * @return
  */
 bool is_reversible(int* encryption_key) {
+    int count[ALPHABET_SIZE] = {0}; // Integer array for how many times each letter is used. ex. [0, 1, 1, 0, 2, ...]
 
+    // Please note I call it character here, but this is an int value, *corresponding* to a position in the alphabet
+    int current_char; // The character of the encryption key currently being checked
+
+    for(int i = 0; i < ALPHABET_SIZE; i++) {
+        current_char = encryption_key[i]; // Get the current character from the encryption key
+
+        // Return false if the current character isn't in the alphabet
+        if (current_char < 0 || current_char >= ALPHABET_SIZE) { return false; }
+
+        count[current_char]++;
+    }
+
+    // Return false if a character appears, more than once, in the encryption key
+    for (int i = 0; i < ALPHABET_SIZE; i++) {
+        if (count[i] != 1) { return false; }
+    }
 }
 
 /**
@@ -367,8 +395,16 @@ bool is_reversible(int* encryption_key) {
  * @return
  */
 int* get_decryption_key(int* encryption_key) {
-  // todo
-  return NULL;
+    if (!is_reversible(encryption_key)) { return NULL; } // Return NULL if the encryption key isn't reversible
+
+    int* decryption_key = (int*)malloc(ALPHABET_SIZE * sizeof(int)); // Allocate memory for the decryption key
+
+
+    for (int i = 0; i < ALPHABET_SIZE; i++) {
+        decryption_key[encryption_key[i]] = i; // Generate A decryption key, based on the encryption key
+    }
+
+    return decryption_key; // Return the decryption key
 }
 
 /**
@@ -377,8 +413,16 @@ int* get_decryption_key(int* encryption_key) {
  * @param encryption_key
  */
 void encrypt_substitution(char* input_str, int* encryption_key) {
-  // todo
-  return;
+    to_lowercase(input_str); // Convert the input string to lowercase
+
+    for (int i = 0; input_str[i] != '\0'; i++) {
+        // If the character is a lowercase letter, encrypt it
+        // Check each character in the input string in case any of them aren't letters
+        if (input_str[i] >= 'a' && input_str[i] <= 'z') {
+            // The 'a' stuff here is to convert the ASCII value of the character to a value between 0 and 25
+            input_str[i] = encryption_key[input_str[i] - 'a'] + 'a';
+        }
+    }
 }
 
 /**
@@ -387,8 +431,16 @@ void encrypt_substitution(char* input_str, int* encryption_key) {
  * @param decryption_key
  */
 void decrypt_substitution(char* input_str, int* decryption_key) {
-  // todo
-  return;
+    to_lowercase(input_str); // Convert the input string to lowercase
+
+    for (int i = 0; input_str[i] != '\0'; i++) {
+        // If the character is a lowercase letter, decrypt it
+        // Check each character in the input string in case any of them aren't letters
+        if (input_str[i] >= 'a' && input_str[i] <= 'z') {
+            // The 'a' stuff here continues to be to convert the ASCII value of the character to a value between 0 and 25
+            input_str[i] = decryption_key[input_str[i] - 'a'] + 'a';
+        }
+    }
 }
 
 
