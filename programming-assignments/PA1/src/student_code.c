@@ -198,9 +198,7 @@ int num_people_in_group(Group group) {
  * @param group A Group struct that contains some number of people
  * @return The number of free spaces in the group
  */
-int free_spaces_in_group(Group group) {
-    return GROUP_MAX_SIZE - group.num_members; // Return the number of free spaces in the group
-}
+int free_spaces_in_group(Group group) { return GROUP_MAX_SIZE - group.num_members; }
 
 /**
  * Add a person to the group if possible and return the total number of free space in the group. Otherwise return -1.
@@ -273,7 +271,7 @@ char shift_left(char input_char, int shift_size) {
     int new_char = input_char - shift_size;
 
     // If the new character is less than 'a', add 26 to it (loop back around to the end of the alphabet)
-    if (new_chat < 'a') { new_char += 26; }
+    if (new_char < 'a') { new_char += 26; }
 }
 
 /**
@@ -303,8 +301,24 @@ char shift_right(char input_char, int shift_size) {
  * @return
  */
 char* encrypt_caesar(char* input_str, int shift_size) {
-  // todo
-  return NULL;
+    // Get the length of the input string
+    int length = get_str_length(input_str);
+
+    // Allocate memory for the new string
+    char* encrypted_str = (char*)malloc((length + 1) * sizeof(char));
+
+    // Convert the input string to lowercase
+    to_lowercase(input_str);
+
+    // Encrypt each character in the input string
+    for (int i = 0; i < length; i++) {
+        // Shift the character to the right
+        encrypted_str[i] = shift_right(input_str[i], shift_size);
+    }
+
+    encrypted_str[length] = '\0'; // Add the null terminator to the end of the new string
+
+    return encrypted_str; // Return the encrypted string
 }
 
 /**
@@ -314,8 +328,24 @@ char* encrypt_caesar(char* input_str, int shift_size) {
  * @return
  */
 char* decrypt_caesar(char* input_str, int shift_size) {
-  // todo
-  return NULL;
+    // Get the length of the input string
+    int length = get_str_length(input_str);
+
+    // Allocate memory for the new string
+    char* decrypted_str = (char*)malloc((length + 1) * sizeof(char));
+
+    // Convert the input string to lowercase
+    to_lowercase(input_str);
+
+    // Decrypt each character in the input string
+    for (int i = 0; i < length; i++) {
+        // Shift the character to the left
+        decrypted_str[i] = shift_left(input_str[i], shift_size);
+    }
+
+    decrypted_str[length] = '\0'; // Add the null terminator to the end of the new string
+
+    return decrypted_str; // Return the decrypted string
 }
 
 /*
@@ -328,8 +358,7 @@ char* decrypt_caesar(char* input_str, int shift_size) {
  * @return
  */
 bool is_reversible(int* encryption_key) {
-  // todo
-  return false;
+
 }
 
 /**
