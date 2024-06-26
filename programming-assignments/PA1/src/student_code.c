@@ -284,8 +284,16 @@ char shift_left(char input_char, int shift_size) {
  * @return
  */
 char shift_right(char input_char, int shift_size) {
-  // todo
-  return 0;
+    // Return the input character if it's not a lowercase letter
+    if (input_char < 'a' || input_char > 'z') { return input_char; }
+
+    // Shift the character to the right by the shift size
+    int new_char = input_char + shift_size;
+
+    // If the new character is greater than 'z', subtract 26 from it (loop back around to the beginning of the alphabet)
+    if (new_char > 'z') { new_char -= 26; }
+
+    return new_char; // Return the new character
 }
 
 /**
