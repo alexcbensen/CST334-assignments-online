@@ -1,3 +1,4 @@
+#define GROUP_MAX_SIZE 50
 
 #include "student_code.h"
 #include <stdlib.h>
@@ -47,6 +48,8 @@ char* copy_str(char* str) {
     for (int i = 0; i < length; i++) { strCopy[i] = str[i]; }
 
     strCopy[length] = '\0'; // Add the null terminator to the end of the new string
+
+    return strCopy; // Return the new string
 }
 
 /**
@@ -78,7 +81,8 @@ void to_uppercase(char* str) {
  */
 void to_lowercase(char* str) {
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] >= 'A' && str[i] <= 'Z') { str[i] += 32; } // If the character is uppercase, convert it to lowercase (ASCII values)
+        // If the character is uppercase, convert it to lowercase (ASCII values)
+        if (str[i] >= 'A' && str[i] <= 'Z') { str[i] += 32; }
     }
 }
 
@@ -106,7 +110,8 @@ int find_last_index(char* str, char target) {
     int last_index = -1; // Initialize as if the target character isn't found
 
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == target) { last_index = i; } // Update the last index each time the target character is found
+        // Update the last index each time the target character is found
+        if (str[i] == target) { last_index = i; }
     }
 
     return last_index; // Return the last index of the target character
@@ -125,8 +130,17 @@ int find_last_index(char* str, char target) {
  */
 Person person_make_new(char* first_name, char* last_name, int age) {
     Person new_person; // Create a new Person struct
-    new_person.first_name = first_name;
-    new_person.last_name = last_name;
+
+    // Copy first_name to new_person.first_name
+    for (int i = 0; i < (sizeof(new_person.first_name) - 1) && (first_name[i] != '\0'); i++) {
+        new_person.first_name[i] = first_name[i];
+    }
+
+    // Copy last_name to new_person.last_name
+    for (int i = 0; i < (sizeof(new_person.last_name) - 1) && (last_name[i] != '\0'); i++) {
+        new_person.last_name[i] = last_name[i];
+    }
+
     new_person.age = age;
 
     return new_person; // Return the Person struct that was created
@@ -142,7 +156,7 @@ char* person_to_string(Person person) {
     int length = get_str_length(person.first_name) + get_str_length(person.last_name) + 6;
 
     // Allocate memory for the new string
-    char* str - (char*)malloc((length + 1) * sizeof(char));
+    char* str = (char*)malloc((length + 1) * sizeof(char));
 
     // Use sprintf to format the string
     sprintf(str, "%s %s (%d)", person.first_name, person.last_name, person.age);
@@ -158,10 +172,14 @@ char* person_to_string(Person person) {
 Group group_make_new(char* group_name) {
     Group new_group; // Create a new Group struct
 
-    new_group.group_name = group_name; // Initialize the group with the passed-in name
-    new_group.people = (Person*)malloc(0); // Initialize the people array to be a pointer to an empty block of memory
-    new_group.num_people = 0; // Initialize the number of people in the group to be 0
-    new_group.capacity = 0; // Initialize the capacity of the group to be 0
+    // Initialize the group with the passed-in name
+    new_group.group_name = group_name;
+
+    // Initialize the group with no members
+    for (int i = 0; i < GROUP_MAX_SIZE; i++) { new_group.group_members[i] = NULL; }
+
+    // Initialize the number of people in the group to be 0
+    new_group.num_members = 0;
 
     return new_group; // Return the new Group struct
 }
@@ -172,7 +190,7 @@ Group group_make_new(char* group_name) {
  * @return The number of users in the group
  */
 int num_people_in_group(Group group) {
-    return group.num_people; // Return the number of people in the group
+    return group.num_members; // Return the number of people in the group
 }
 
 /**
@@ -181,7 +199,7 @@ int num_people_in_group(Group group) {
  * @return The number of free spaces in the group
  */
 int free_spaces_in_group(Group group) {
-    return group.capacity - group.num_people; // Return the number of free spaces in the group
+    return GROUP_MAX_SIZE - group.num_members; // Return the number of free spaces in the group
 }
 
 /**
@@ -191,15 +209,18 @@ int free_spaces_in_group(Group group) {
  * @return The number of free spaces after add the new person, -1 if the group was already full
  */
 int add_person(Group* group, Person* person_to_add) {
-    if (group->num_people >= group->capacity) { return -1; } // Return -1 if the group is full (or if it's over capacity)
+    if (group->num_people >= GROUP_MAX_SIZE) { return -1; } // Return -1 if the group is full (or if it's over capacity)
 
     // If the group isn't full, add the new person to it
     group->people[group->num_people] = *person_to_add;
 
     group->num_people++; // Increment the number of people in the group
 
-    // Return the number of free spaces in the group
-    return group->capacity - group->num_people;
+    // Calculate the number of free spaces in the group
+    int free_space = GROUP_MAX_SIZE - group->num_people;
+
+    // Return the number of free spaces
+    return free_space;
 }
     // Question: Say we have already added a person to the group and try to add them again.  What should be we do?  Where can we check what the expected behavior is?
     // Answer:
