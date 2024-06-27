@@ -217,7 +217,13 @@ int free_spaces_in_group(Group group) { return GROUP_MAX_SIZE - group.num_member
  * @return The number of free spaces after add the new person, -1 if the group was already full
  */
 int add_person(Group* group, Person* person_to_add) {
-    if (group->num_members >= GROUP_MAX_SIZE) { return -1; } // Return -1 if the group is full (or if it's over capacity)
+    // Return -1 if the group is full (or if it's over capacity)
+    if (group->num_members >= GROUP_MAX_SIZE) { return -1; }
+
+    // Return -1 if the person is already in the group
+    for (int i = 0; i < group->num_members; i++) {
+        if (group->group_members[i] == person_to_add) { return -1; }
+    }
 
     // If the group isn't full, add the new person to it
     group->group_members[group->num_members] = person_to_add;
