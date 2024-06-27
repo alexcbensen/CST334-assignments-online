@@ -112,9 +112,16 @@ int find_first_index(char* str, char target) {
 int find_last_index(char* str, char target) {
     int last_index = -1; // Initialize as if the target character isn't found
 
+    if (target >= 'A' && target <= 'Z') { target += 32; } // Convert the target character to lowercase (ASCII)
+
     for (int i = 0; str[i] != '\0'; i++) {
+        char current_char = str[i]; // Get the current character of the string
+
+        // Convert the current character to lowercase (ASCII)
+        if (current_char >= 'A' && current_char <= 'Z') { current_char += 32; }
+
         // Update the last index each time the target character is found
-        if (str[i] == target) { last_index = i; }
+        if (current_char == target) { last_index = i; }
     }
 
     return last_index; // Return the last index of the target character
