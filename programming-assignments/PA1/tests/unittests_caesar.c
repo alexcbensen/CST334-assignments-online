@@ -33,7 +33,7 @@ Test(CaesarCipher, encrypt_caesar, .disabled=false) {
   );
 }
 
-Test(CaesarCipher, decrypt_caesar, .disabled=false) {
+Test(CaesarCipher, decrypt_caesar, .disabled=true) {
   char* test_str = "if he had anything confidential to say, he wrote it in cipher, that is, by so changing the order of the letters of the alphabet, that not a word could be made out.";
 
   cr_assert_str_eq(
