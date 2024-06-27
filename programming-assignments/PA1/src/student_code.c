@@ -94,11 +94,13 @@ void to_lowercase(char* str) {
  * @return The index of the first usage of the target character in the string
  */
 int find_first_index(char* str, char target) {
+    int first_index = -1; // Initialize as if the target character isn't found
+
     for (int i = 0; str[i] != '\0'; i++) {
-        if (str[i] == target) { return i; } // Return the index of the first instance of the target character
+        if (str[i] == target) { first_index = i; } // Return the index of the first instance of the target character
     }
 
-    return -1; // Return -1 if the target character isn't found
+    return first_index; // Return the first index of the target character
 }
 
 /**
@@ -267,7 +269,7 @@ int remove_person(Group* group, Person* person_to_remove) {
 char shift_left(char input_char, int shift_size) {
     int new_char;
 
-    if (input_char < 'a' && input_char > 'z') {
+    if (input_char >= 'a' && input_char <= 'z') {
         // Shift the character to the left by the shift size
         new_char = input_char - shift_size;
 
@@ -275,8 +277,8 @@ char shift_left(char input_char, int shift_size) {
         if (new_char < 'a') { new_char += 26; }
 
     } else if (input_char >= 'A' && input_char <= 'Z') {
-        // Shift the character to the left by the shift size
-        new_char = input_char - shift_size;
+        // Convert the character to lowercase and shift it to the right by the shift size
+        new_char = input_char + shift_size + 32;
 
         // If the new character is less than 'A', add 26 to it (loop back around to the end of the alphabet)
         if (new_char < 'A') { new_char += 26; }
@@ -293,16 +295,22 @@ char shift_left(char input_char, int shift_size) {
  * @return
  */
 char shift_right(char input_char, int shift_size) {
-    // Return the input character if it's not a lowercase letter
-    if (input_char < 'a' || input_char > 'z') { return input_char; }
+    int new_char;
 
-    // Shift the character to the right by the shift size
-    int new_char = input_char + shift_size;
+    if (input_char >= 'a' && input_char <= 'z') {
+        // Shift the character to the right by the shift size
+        new_char = input_char + shift_size;
 
-    // If the new character is greater than 'z', subtract 26 from it (loop back around to the beginning of the alphabet)
-    if (new_char > 'z') { new_char -= 26; }
+        // If the new character is greater than 'z', subtract 26 from it (loop back around to the beginning of the alphabet)
+        if (new_char > 'z') { new_char -= 26; }
 
-    return new_char; // Return the new character
+    } else if (input_char >= 'A' && input_char <= 'Z') {
+        // Convert the character to lowercase and shift it to the right by the shift size
+        new_char = input_char + shift_size + 32;
+
+        // If the new character is greater than 'Z', subtract 26 from it (loop back around to the beginning of the alphabet)
+        if (new_char > 'Z') { new_char -= 26; }
+    } else { return input_char; }
 }
 
 /**
