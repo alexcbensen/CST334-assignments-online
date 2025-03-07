@@ -26,35 +26,68 @@ void String__delete(String* str) {
 }
 
 size_t String__length(const String* str) {
-  // todo
+  return str->length;
 }
-
+/**
+ * Increases capacity of given String struct to give new_size, if appropriate, otherwise leaves it untouched.
+ * @param str
+ * @param new_size
+ */
 void String__reserve(String* str, size_t new_capacity) {
-  // todo
+  if (new_capacity > str->capacity) {
+    char* new_data = (char*)malloc(new_capacity);
+
+    if (new_data) {
+      strncpy(new_data, str->data, str->length);
+      free(str->data);
+      str->data = new_data;
+      str->capacity = new_capacity;
+    }
+  }
 }
 
 void String__resize(String* str, size_t new_size, const char c) {
-  // todo
+  if (new_size > str->length) {
+    String__reserve(str, new_size + 1);
+    memset(str->data + str->length, c, new_size - str->length);
+    str->length = new_size;
+  } else {
+    str->length = new_size;
+    str->data[str->length] = '\0';
+  }
 }
 
 void String__clear(String* str) {
-  // todo
+  str->length = 0;
+  str->data[0] = '\0';
 }
 
 bool String__empty(String* str) {
-  // todo
+  return str->length == 0;
 }
 
 char String__at(String* str, size_t index) {
-  // todo
+    if (index < str->length) {
+        return str->data[index];
+    } else {
+        return '\0';
+    }
 }
 
 char String__back(String* str) {
-  // todo
+  if (str->length > 0) {
+    return str->data[str->length - 1];
+  } else {
+    return '\0';
+  }
 }
 
 char String__front(String* str) {
-  // todo
+  if (str->length > 0) {
+    return str->data[0];
+  } else {
+    return '\0';
+  }
 }
 
 void String__append(String* str, const String* str_to_add) {
