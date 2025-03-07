@@ -6,3 +6,7 @@ unit_tests
 debug
 logs/
 a.out
+*.pdf
+*.docx
+labs/lab1-debugging_with_gdb/README.md
+labs/lab1-debugging_with_gdb/README.md
