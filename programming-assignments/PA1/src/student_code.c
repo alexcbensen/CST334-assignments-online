@@ -28,17 +28,13 @@ void String__delete(String* str) {
 size_t String__length(const String* str) {
   return str->length;
 }
-/**
- * Increases capacity of given String struct to give new_size, if appropriate, otherwise leaves it untouched.
- * @param str
- * @param new_size
- */
+
 void String__reserve(String* str, size_t new_capacity) {
   if (new_capacity > str->capacity) {
     char* new_data = (char*)malloc(new_capacity);
 
     if (new_data) {
-      strncpy(new_data, str->data, str->length);
+      memcpy(new_data, str->data, str->length);
       free(str->data);
       str->data = new_data;
       str->capacity = new_capacity;
@@ -50,11 +46,12 @@ void String__resize(String* str, size_t new_size, const char c) {
   if (new_size > str->length) {
     String__reserve(str, new_size + 1);
     memset(str->data + str->length, c, new_size - str->length);
-    str->length = new_size;
   } else {
-    str->length = new_size;
-    str->data[str->length] = '\0';
+    memset(str->data + new_size, '\0', str->length - new_size);
   }
+
+  str->length = new_size;
+  str->data[str->length] = '\0';
 }
 
 void String__clear(String* str) {
@@ -67,11 +64,11 @@ bool String__empty(String* str) {
 }
 
 char String__at(String* str, size_t index) {
-    if (index < str->length) {
-        return str->data[index];
-    } else {
-        return '\0';
-    }
+  if (index < str->length) {
+      return str->data[index];
+  } else {
+      return '\0';
+  }
 }
 
 char String__back(String* str) {
@@ -91,11 +88,19 @@ char String__front(String* str) {
 }
 
 void String__append(String* str, const String* str_to_add) {
-  // todo
+  size_t new_length = str->length + str_to_add->length;
+
+  if (new_length > str->capacity) {
+    String__reserve(str, new_length + 1);
+  }
+
+  strncpy(str->data + str->length, str_to_add->data, str_to_add->length);
+  str->length = new_length;
+  str->data[str->length] = '\0';
 }
 
 void String__push_back(String* str, const char char_to_add) {
-  // todo
+  String__resize(str, (str->length + 1), char_to_add);
 }
 
 void String__pop_back(String* str) {
@@ -103,19 +108,57 @@ void String__pop_back(String* str) {
 }
 
 void String__insert(String* str, const String* str_to_insert, size_t index) {
-  // todo
+  if (index > str->length) { return; }
+
+  size_t new_length = str->length + str_to_insert->length;
+
+  if (new_length > str->capacity) { String__reserve(str, new_length + 1); }
+
+  memmove(str->data + index + str_to_insert->length, str->data + index, str->length - index);
+  memcpy(str->data + index, str_to_insert->data, str_to_insert->length);
+
+  str->length = new_length;
+  str->data[str->length] = '\0';
 }
 
 void String__erase(String* str, size_t pos, size_t len) {
-  // todo
+  if (pos >= str->length) { return; }
+
+  size_t new_length = str->length - len;
+
+  if (new_length > str->length) { return; }
+
+  memmove(str->data + pos, str->data + pos + len, str->length - pos - len);
+  str->length = new_length;
+  str->data[str->length] = '\0';
 }
 
 void String__replace(String* str, size_t pos, size_t len, const String* str_to_replace_with) {
-  // todo
+  if (pos >= str->length) { return; }
+
+  size_t new_length = str->length - len + str_to_replace_with->length;
+
+  if (new_length >= str->capacity) { String__reserve(str, new_length + 1); }
+
+  memmove(str->data + pos + str_to_replace_with->length, str->data + pos + len, str->length - pos - len);
+  memcpy(str->data + pos, str_to_replace_with->data, str_to_replace_with->length);
+
+  str->length = new_length;
+  str->data[str->length] = '\0';
 }
 
 void String__swap(String* str1, String* str2) {
-  // todo
+  char* temp_data = str1->data;
+  size_t temp_length = str1->length;
+  size_t temp_capacity = str1->capacity;
+
+  str1->data = str2->data;
+  str1->length = str2->length;
+  str1->capacity = str2->capacity;
+
+  str2->data = temp_data;
+  str2->length = temp_length;
+  str2->capacity = temp_capacity;
 }
 
 
